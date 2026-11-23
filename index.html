@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#45213f">
+  <meta name="description" content="Découvrez les gâteaux traditionnels et pâtisseries de notre atelier. Commandez simplement en ligne.">
+  <title>Douceurs de l'Atelier — Boutique</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f8f6f5; --surface: #fff; --surface-2: #f1edef;
+      --ink: #2d252d; --muted: #766d75; --line: #e9e1e6;
+      --berry: #c52d69; --berry-dark: #a51e55; --aubergine: #45213f;
+      --aubergine-2: #603052; --success: #247653; --danger: #b42335;
+      --shadow: 0 12px 35px rgba(48, 24, 43, .08);
+      --radius: 20px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.5; }
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid #e98ab0; outline-offset: 3px; }
+    .site-header { color: #fff; background: radial-gradient(circle at 85% 15%, #754164 0, transparent 34%), linear-gradient(120deg, var(--aubergine), #32182f); padding: 22px 18px 35px; }
+    .header-inner, main, .footer-inner { width: min(1120px, 100%); margin: 0 auto; }
+    .topline { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand-logo { width: 46px; height: 46px; flex: 0 0 46px; border-radius: 15px; background: rgba(255,255,255,.13); display: grid; place-items: center; overflow: hidden; }
+    .brand-logo img { width: 100%; height: 100%; object-fit: cover; }
+    .brand-logo svg { width: 25px; height: 25px; }
+    .brand-name { margin: 0; font-size: 1.05rem; font-weight: 800; letter-spacing: -.02em; }
+    .brand-caption { margin: 1px 0 0; color: #e8dce6; font-size: .78rem; }
+    .header-note { color: #f0e4ed; font-size: .8rem; text-align: right; }
+    .hero { padding: 37px 0 5px; max-width: 650px; }
+    .eyebrow { display: inline-block; color: #ffd7e7; font-size: .75rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .hero h1 { margin: 9px 0 10px; font-size: clamp(2rem, 7vw, 3.45rem); line-height: 1.05; letter-spacing: -.055em; }
+    .hero p { margin: 0; color: #eadde7; max-width: 540px; font-size: 1rem; }
+    main { padding: 25px 16px 125px; }
+    .toolbar { display: grid; gap: 13px; margin-bottom: 21px; }
+    .search-wrap { position: relative; }
+    .search-wrap svg { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #8d818a; }
+    .search { width: 100%; min-height: 50px; border: 1px solid var(--line); border-radius: 15px; background: var(--surface); color: var(--ink); padding: 0 15px 0 45px; box-shadow: 0 4px 14px rgba(48,24,43,.03); }
+    .filters { display: flex; gap: 8px; overflow-x: auto; padding: 2px 1px 7px; scrollbar-width: thin; }
+    .filter-btn { border: 1px solid var(--line); border-radius: 999px; padding: 9px 14px; background: var(--surface); color: var(--muted); font-size: .84rem; font-weight: 700; white-space: nowrap; }
+    .filter-btn.active { background: var(--aubergine); border-color: var(--aubergine); color: #fff; }
+    .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 12px; margin: 17px 0 14px; }
+    .section-heading h2 { margin: 0; font-size: 1.35rem; letter-spacing: -.035em; }
+    .section-heading p { margin: 3px 0 0; color: var(--muted); font-size: .84rem; }
+    .product-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 13px; }
+    .product-card { background: var(--surface); border: 1px solid rgba(90,55,80,.07); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); min-width: 0; display: flex; flex-direction: column; }
+    .product-photo { position: relative; aspect-ratio: 1.28 / 1; background: linear-gradient(135deg, #f5e8ed, #e9dce7); overflow: hidden; }
+    .product-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .photo-fallback { width: 100%; height: 100%; display: grid; place-items: center; color: #8d5c78; }
+    .photo-fallback svg { width: 42px; height: 42px; opacity: .75; }
+    .product-body { padding: 12px; display: flex; flex-direction: column; flex: 1; }
+    .product-category { color: var(--berry); font-size: .67rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .product-title { margin: 4px 0 4px; font-size: .98rem; line-height: 1.2; }
+    .product-desc { margin: 0 0 10px; color: var(--muted); font-size: .77rem; line-height: 1.4; min-height: 2.2em; }
+    .product-price { margin: auto 0 10px; font-size: .91rem; font-weight: 850; color: var(--aubergine); }
+    .product-controls { display: grid; gap: 8px; }
+    .unit-select { min-height: 39px; border: 1px solid var(--line); border-radius: 11px; background: var(--surface); color: var(--ink); padding: 0 9px; width: 100%; font-size: .82rem; }
+    .quantity-row { display: flex; align-items: center; gap: 6px; }
+    .qty-btn { width: 37px; height: 37px; border: 1px solid var(--line); background: var(--surface-2); color: var(--aubergine); border-radius: 10px; font-size: 1.2rem; font-weight: 700; flex: 0 0 37px; }
+    .qty-input { min-width: 0; width: 100%; height: 37px; border: 1px solid var(--line); border-radius: 10px; text-align: center; color: var(--ink); background: var(--surface); }
+    .add-btn, .primary-btn { border: 0; border-radius: 12px; min-height: 44px; padding: 10px 13px; background: var(--berry); color: #fff; font-weight: 800; font-size: .84rem; transition: background .15s, transform .15s; }
+    .add-btn:hover, .primary-btn:hover { background: var(--berry-dark); }
+    .add-btn:active, .primary-btn:active { transform: scale(.98); }
+    .add-btn.added { background: var(--success); }
+    .empty-state { grid-column: 1/-1; text-align: center; padding: 35px 18px; color: var(--muted); background: var(--surface); border-radius: var(--radius); border: 1px dashed var(--line); }
+    .trust-strip { margin-top: 26px; padding: 17px; border-radius: 17px; background: var(--surface-2); color: var(--muted); font-size: .83rem; display: flex; gap: 12px; align-items: center; }
+    .trust-strip svg { color: var(--berry); flex: 0 0 24px; }
+    .cart-bar { position: fixed; z-index: 20; left: 12px; right: 12px; bottom: max(12px, env(safe-area-inset-bottom)); width: min(620px, calc(100% - 24px)); margin: auto; border: 0; border-radius: 17px; background: var(--aubergine); color: #fff; min-height: 62px; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 12px 35px rgba(45,22,42,.28); text-align: left; }
+    .cart-left { display: flex; align-items: center; gap: 11px; }
+    .cart-icon { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 12px; background: rgba(255,255,255,.13); }
+    .cart-label { display: block; font-size: .9rem; font-weight: 800; }
+    .cart-count { display: block; color: #e7d9e4; font-size: .72rem; }
+    .cart-total { font-weight: 850; font-size: 1.02rem; white-space: nowrap; }
+    .overlay { position: fixed; z-index: 30; inset: 0; background: rgba(24,12,22,.56); opacity: 0; visibility: hidden; transition: .2s; }
+    .overlay.open { opacity: 1; visibility: visible; }
+    .drawer { position: fixed; z-index: 31; inset: auto 0 0; max-height: 92dvh; overflow-y: auto; background: var(--bg); border-radius: 24px 24px 0 0; padding: 18px 16px calc(25px + env(safe-area-inset-bottom)); transform: translateY(105%); transition: transform .25s ease; }
+    .drawer.open { transform: translateY(0); }
+    .drawer-inner { width: min(720px, 100%); margin: 0 auto; }
+    .drawer-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 15px; }
+    .drawer-head h2 { margin: 0; font-size: 1.35rem; }
+    .icon-btn { width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--ink); display: grid; place-items: center; }
+    .cart-items { display: grid; gap: 10px; }
+    .cart-line { display: grid; grid-template-columns: 62px minmax(0,1fr) auto; gap: 11px; align-items: center; background: var(--surface); padding: 10px; border: 1px solid var(--line); border-radius: 15px; }
+    .cart-line img, .cart-thumb { width: 62px; height: 62px; border-radius: 11px; object-fit: cover; background: var(--surface-2); }
+    .cart-thumb { display: grid; place-items: center; color: var(--muted); }
+    .cart-line h3 { margin: 0 0 3px; font-size: .88rem; }
+    .line-meta { color: var(--muted); font-size: .75rem; }
+    .line-controls { display: flex; align-items: center; gap: 5px; margin-top: 7px; }
+    .line-controls button { width: 28px; height: 28px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); color: var(--aubergine); font-weight: 800; }
+    .line-controls input { width: 43px; height: 28px; border: 1px solid var(--line); border-radius: 7px; text-align: center; background: var(--surface); color: var(--ink); }
+    .line-end { display: grid; justify-items: end; gap: 8px; }
+    .line-price { font-size: .84rem; font-weight: 850; white-space: nowrap; }
+    .remove-btn { border: 0; background: transparent; color: var(--danger); font-size: .75rem; text-decoration: underline; padding: 2px; }
+    .summary { margin: 15px 0; padding: 14px; border-radius: 15px; background: var(--surface); border: 1px solid var(--line); }
+    .summary-row { display: flex; justify-content: space-between; gap: 12px; font-size: .87rem; padding: 3px 0; }
+    .summary-row.total { border-top: 1px solid var(--line); margin-top: 7px; padding-top: 10px; font-weight: 900; font-size: 1.08rem; color: var(--aubergine); }
+    .indicative { margin: 7px 0 0; color: var(--muted); font-size: .72rem; }
+    .form-section { margin-top: 20px; }
+    .form-section h3 { margin: 0 0 12px; font-size: 1.08rem; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .field { min-width: 0; }
+    .field.full { grid-column: 1/-1; }
+    .field label, .field-label { display: block; margin-bottom: 5px; font-size: .8rem; font-weight: 750; }
+    .field input, .field textarea { width: 100%; min-height: 45px; border: 1px solid var(--line); border-radius: 11px; padding: 10px 12px; background: var(--surface); color: var(--ink); }
+    .field textarea { min-height: 78px; resize: vertical; }
+    .field input.invalid, .field textarea.invalid { border-color: var(--danger); }
+    .error { min-height: 17px; margin-top: 3px; color: var(--danger); font-size: .72rem; }
+    .mode-options { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    .mode-option { position: relative; }
+    .mode-option input { position: absolute; opacity: 0; pointer-events: none; }
+    .mode-option span { display: flex; align-items: center; justify-content: center; min-height: 48px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); font-size: .82rem; font-weight: 750; text-align: center; padding: 8px; }
+    .mode-option input:checked + span { border: 2px solid var(--berry); background: color-mix(in srgb, var(--berry) 8%, var(--surface)); color: var(--berry-dark); }
+    .mode-option input:focus-visible + span { outline: 3px solid #e98ab0; outline-offset: 3px; }
+    .pickup-address { padding: 11px 12px; background: var(--surface-2); border-radius: 11px; color: var(--muted); font-size: .8rem; }
+    .delivery-note { margin-top: 5px; font-size: .74rem; color: var(--muted); }
+    .checkout-actions { display: grid; gap: 9px; margin-top: 16px; }
+    .secondary-btn { min-height: 45px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--aubergine); font-weight: 800; }
+    .form-status { margin-top: 10px; padding: 11px 12px; border-radius: 11px; font-size: .82rem; display: none; }
+    .form-status.show { display: block; }
+    .form-status.error-status { background: #fff0f1; color: #8f1d2c; }
+    .form-status.success-status { background: #e9f6ef; color: #17613f; }
+    .site-footer { padding: 22px 16px 105px; text-align: center; color: var(--muted); font-size: .76rem; }
+    .site-footer strong { color: var(--aubergine); }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    @media (min-width: 620px) {
+      .site-header { padding: 25px 24px 43px; }
+      main { padding: 32px 24px 130px; }
+      .toolbar { grid-template-columns: minmax(230px, 1fr) auto; align-items: center; }
+      .filters { justify-content: flex-end; }
+      .product-grid { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; }
+      .product-body { padding: 15px; }
+      .product-title { font-size: 1.05rem; }
+      .product-desc { font-size: .82rem; }
+      .drawer { inset: 0 0 0 auto; width: min(570px, 100%); max-height: none; height: 100dvh; border-radius: 22px 0 0 22px; padding: 24px 22px; transform: translateX(105%); }
+      .drawer.open { transform: translateX(0); }
+      .cart-bar { bottom: 20px; }
+    }
+    @media (min-width: 900px) { .product-grid { grid-template-columns: repeat(4, minmax(0,1fr)); } }
+    @media (max-width: 380px) { .product-grid { gap: 9px; } .product-body { padding: 10px; } .product-title { font-size: .9rem; } .product-desc { font-size: .72rem; } .add-btn { font-size: .77rem; } }
+    @media (prefers-color-scheme: dark) {
+      :root { color-scheme: dark; --bg:#171319; --surface:#231d25; --surface-2:#302733; --ink:#f4edf3; --muted:#b7aab6; --line:#403442; --aubergine:#754363; --aubergine-2:#8a5276; --berry:#df5a91; --berry-dark:#c8427b; --shadow:0 12px 35px rgba(0,0,0,.22); --success:#2d805d; --danger:#ff7886; }
+      .site-header { background: radial-gradient(circle at 85% 15%, #68405e 0, transparent 34%), linear-gradient(120deg, #301c30, #211522); }
+      .product-photo { background: linear-gradient(135deg,#44313f,#382a39); }
+      .photo-fallback { color:#d5a9c2; }
+      .filter-btn.active { background:#8b4c75; border-color:#8b4c75; }
+      .mode-option input:checked + span { background: color-mix(in srgb, var(--berry) 14%, var(--surface)); }
+      .form-status.error-status { background:#45242a; color:#ffb2ba; }
+      .form-status.success-status { background:#1d3b30; color:#a4e2c1; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior:auto !important; transition:none !important; } }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="topline">
+        <div class="brand">
+          <div class="brand-logo" id="brandLogo" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 14.5c0-4.4 3.6-8 8-8s8 3.6 8 8"/><path d="M3 15h18v3H3zM8 6l1-2m7 2-1-2M12 6V3"/></svg>
+          </div>
+          <div><p class="brand-name" id="brandName">Douceurs de l'Atelier</p><p class="brand-caption">Tradition, finesse et gourmandise</p></div>
+        </div>
+        <div class="header-note">Commandes sur mesure<br>Préparées avec soin</div>
+      </div>
+      <div class="hero">
+        <span class="eyebrow">La boutique de l'atelier</span>
+        <h1>Un peu de douceur<br>à partager.</h1>
+        <p>Découvrez nos gâteaux traditionnels et nos créations pâtissières. Choisissez vos envies, composez votre panier et envoyez votre commande en quelques instants.</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section aria-label="Catalogue">
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg>
+          <label class="sr-only" for="searchInput">Rechercher un produit</label>
+          <input class="search" id="searchInput" type="search" placeholder="Rechercher une douceur…" autocomplete="off">
+        </div>
+        <nav class="filters" id="filters" aria-label="Filtrer par catégorie">
+          <button class="filter-btn active" type="button" data-category="all">Tout voir</button>
+          <button class="filter-btn" type="button" data-category="traditionnels">Gâteaux traditionnels</button>
+          <button class="filter-btn" type="button" data-category="patisserie">Pâtisserie</button>
+          <button class="filter-btn" type="button" data-category="verrines">Verrines</button>
+          <button class="filter-btn" type="button" data-category="packs">Packs</button>
+        </nav>
+      </div>
+      <div class="section-heading">
+        <div><h2>Notre sélection</h2><p>Des douceurs pour toutes vos occasions.</p></div>
+      </div>
+      <div class="product-grid" id="productGrid" aria-live="polite"></div>
+    </section>
+    <div class="trust-strip">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>
+      <div><strong>Commande sans paiement en ligne.</strong> Le règlement s'effectue à la récupération ou à la remise de votre commande. Le prix final est confirmé par l'atelier.</div>
+    </div>
+  </main>
+
+  <footer class="site-footer"><div class="footer-inner"><strong id="footerName">Douceurs de l'Atelier</strong> · Fait avec soin, pour vos moments précieux.</div></footer>
+
+  <button class="cart-bar" id="cartBar" type="button" aria-label="Ouvrir le panier">
+    <span class="cart-left"><span class="cart-icon"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 4h2l2.1 11.2a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 1.9-1.5L22 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg></span><span><span class="cart-label">Mon panier</span><span class="cart-count" id="cartCount">0 article</span></span></span>
+    <span class="cart-total" id="cartBarTotal">0 DA</span>
+  </button>
+
+  <div class="overlay" id="overlay"></div>
+  <aside class="drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true">
+    <div class="drawer-inner">
+      <div class="drawer-head"><h2 id="drawerTitle">Votre panier</h2><button class="icon-btn" id="closeDrawer" type="button" aria-label="Fermer le panier"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+      <div class="cart-items" id="cartItems"></div>
+      <div class="summary">
+        <div class="summary-row"><span>Sous-total</span><strong id="subtotal">0 DA</strong></div>
+        <div class="summary-row" id="deliverySummaryRow" hidden><span>Livraison</span><strong id="deliverySummary">0 DA</strong></div>
+        <div class="summary-row total"><span>Total estimé</span><strong id="grandTotal">0 DA</strong></div>
+        <p class="indicative">Prix indicatif, confirmé par l'atelier. Aucun paiement en ligne n'est demandé.</p>
+      </div>
+
+      <form id="orderForm" novalidate>
+        <section class="form-section">
+          <h3>Vos coordonnées</h3>
+          <div class="form-grid">
+            <div class="field"><label for="lastName">Nom *</label><input id="lastName" name="lastName" autocomplete="family-name" required><div class="error" id="lastNameError"></div></div>
+            <div class="field"><label for="firstName">Prénom *</label><input id="firstName" name="firstName" autocomplete="given-name" required><div class="error" id="firstNameError"></div></div>
+            <div class="field full"><label for="phone">Numéro de téléphone *</label><input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Ex. 0550 12 34 56" required><div class="error" id="phoneError"></div></div>
+          </div>
+        </section>
+        <section class="form-section">
+          <h3>Mode de réception *</h3>
+          <div class="mode-options">
+            <label class="mode-option"><input type="radio" name="deliveryMode" value="pickup" checked><span>Récupération sur place</span></label>
+            <label class="mode-option"><input type="radio" name="deliveryMode" value="delivery"><span>Livraison</span></label>
+          </div>
+          <div id="pickupBlock" class="pickup-address" style="margin-top:10px"></div>
+          <div id="deliveryBlock" hidden>
+            <div class="field" style="margin-top:11px"><label for="address">Adresse complète *</label><textarea id="address" name="address" placeholder="Commune, quartier, rue, numéro, repère…"></textarea><div class="error" id="addressError"></div></div>
+            <p class="delivery-note" id="deliveryFeeNote"></p>
+          </div>
+        </section>
+        <section class="form-section">
+          <h3>Précisions (facultatif)</h3>
+          <div class="form-grid">
+            <div class="field"><label for="wantedDate">Date souhaitée</label><input id="wantedDate" type="date"></div>
+            <div class="field"><label for="wantedTime">Heure souhaitée</label><input id="wantedTime" type="time"></div>
+            <div class="field full"><label for="remark">Votre remarque</label><textarea id="remark" placeholder="Une précision pour préparer votre commande…"></textarea></div>
+          </div>
+        </section>
+        <div class="checkout-actions">
+          <button class="primary-btn" id="whatsappBtn" type="button" hidden>Envoyer ma commande par WhatsApp</button>
+          <button class="secondary-btn" id="emailBtn" type="button" hidden>Envoyer par email</button>
+        </div>
+        <div class="form-status" id="formStatus" role="status" aria-live="polite"></div>
+      </form>
+    </div>
+  </aside>
+
+<script>
+/* =========================================================
+   CONFIGURATION — Modifiez ces valeurs avant la publication.
+   Le numéro WhatsApp doit être au format international sans +,
+   espace ni tiret : 213XXXXXXXXX pour un numéro algérien.
+   Pour afficher l'envoi email, renseignez une clé Web3Forms.
+   ========================================================= */
+const CONFIG = {
+  atelierName: "Douceurs de l'Atelier",
+  logo: "", // Exemple : "images/logo.png" (laisser vide pour l'icône intégrée)
+  whatsappNumber: "213XXXXXXXXX", // À remplacer par le vrai numéro de l'atelier
+  web3formsKey: "", // Clé d'accès Web3Forms ; laisser vide pour désactiver l'email
+  atelierAddress: "Adresse de l'atelier à compléter, Sétif, Algérie",
+  deliveryFee: 500, // Frais de livraison en DA ; mettre 0 si livraison offerte
+  currency: "DA"
+};
+
+/* =========================================================
+   CATALOGUE PRODUITS
+   - priceKg : prix au kilo en DA (null si non disponible)
+   - pricePiece : prix à la pièce en DA (null si non disponible)
+   - photo : chemin local de la photo. Placez les images dans
+     un dossier "images" à côté de ce fichier HTML.
+   Modifiez les prix directement dans ce tableau.
+   ========================================================= */
+const PRODUCTS = [
+  { id:"makrout", name:"Makrout", description:"Pâte de semoule fondante, cœur de dattes et délicate note de miel.", category:"traditionnels", photo:"images/makrout.jpg", priceKg:1800, pricePiece:null },
+  { id:"baklawa", name:"Baklawa", description:"Feuilletage fin et croustillant, généreusement garni d'amandes.", category:"traditionnels", photo:"images/baklawa.jpg", priceKg:3200, pricePiece:null },
+  { id:"cornes", name:"Corne de gazelle", description:"Une pâtisserie délicate à la pâte fine et au parfum de fleur d'oranger.", category:"traditionnels", photo:"images/corne-gazelle.jpg", priceKg:2600, pricePiece:150 },
+  { id:"tiramisu", name:"Tiramisu en verrine", description:"Crème onctueuse, biscuit imbibé et touche de cacao.", category:"verrines", photo:"images/tiramisu-verrine.jpg", priceKg:null, pricePiece:250 },
+  { id:"pack-gouter", name:"Pack goûter", description:"Une sélection gourmande à partager, idéale pour vos pauses.", category:"packs", photo:"images/pack-gouter.jpg", priceKg:null, pricePiece:1200 },
+  { id:"mini-tartelettes", name:"Mini-tartelettes", description:"Petites bouchées pâtissières aux saveurs fruitées.", category:"patisserie", photo:"images/mini-tartelettes.jpg", priceKg:2800, pricePiece:180 }
+];
+
+const CATEGORY_LABELS = { traditionnels:"Gâteaux traditionnels", patisserie:"Pâtisserie", verrines:"Verrines", packs:"Packs" };
+const STORAGE_KEY = "douceurs_atelier_cart_v1";
+const $ = (id) => document.getElementById(id);
+let activeCategory = "all";
+let cart = loadCart();
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function formatMoney(value) {
+  return new Intl.NumberFormat("fr-FR", {maximumFractionDigits:0}).format(Math.round(value || 0)) + " " + CONFIG.currency;
+}
+function getProduct(id) { return PRODUCTS.find(p => p.id === id); }
+function validUnit(product, unit) { return unit === "kg" ? product.priceKg != null : product.pricePiece != null; }
+function unitPrice(product, unit) { return unit === "kg" ? Number(product.priceKg) : Number(product.pricePiece); }
+function quantityStep(unit) { return unit === "kg" ? 1 : 1; }
+function normalizeQuantity(value, unit) {
+  const n = Number(value);
+  if (!Number.isFinite(n) || n < 1) return 1;
+  return Math.max(1, Math.floor(n)); // Quantités entières : kilos entiers ou pièces entières.
+}
+function loadCart() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(row => {
+      const p = getProduct(row.id);
+      return p && validUnit(p, row.unit) && Number.isFinite(Number(row.qty)) && Number(row.qty) >= 1;
+    }).map(row => ({id:row.id, unit:row.unit, qty:normalizeQuantity(row.qty,row.unit)}));
+  } catch (error) {
+    console.warn("Panier local indisponible :", error);
+    return [];
+  }
+}
+function saveCart() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(cart)); }
+  catch (error) { console.warn("Impossible d'enregistrer le panier :", error); }
+}
+function cartSubtotal() {
+  return cart.reduce((sum, row) => {
+    const p = getProduct(row.id);
+    return p ? sum + unitPrice(p,row.unit) * row.qty : sum;
+  }, 0);
+}
+function selectedMode() { return document.querySelector('input[name="deliveryMode"]:checked')?.value || "pickup"; }
+function deliveryCost() { return selectedMode() === "delivery" ? Math.max(0, Number(CONFIG.deliveryFee) || 0) : 0; }
+function cartGrandTotal() { return cartSubtotal() + deliveryCost(); }
+
+function renderProducts() {
+  const query = $("searchInput").value.trim().toLocaleLowerCase("fr");
+  const products = PRODUCTS.filter(p => (activeCategory === "all" || p.category === activeCategory) &&
+    (p.name + " " + p.description).toLocaleLowerCase("fr").includes(query));
+  $("productGrid").innerHTML = products.length ? products.map(p => {
+    const units = [];
+    if (p.priceKg != null) units.push(`<option value="kg">Au kilo — ${formatMoney(p.priceKg)}/kg</option>`);
+    if (p.pricePiece != null) units.push(`<option value="piece">À la pièce — ${formatMoney(p.pricePiece)}/pièce</option>`);
+    const multi = units.length > 1;
+    const defaultUnit = p.priceKg != null ? "kg" : "piece";
+    const initialPrice = unitPrice(p, defaultUnit);
+    return `<article class="product-card" data-product="${escapeHTML(p.id)}">
+      <div class="product-photo">
+        <img src="${escapeHTML(p.photo)}" alt="${escapeHTML(p.name)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.hidden=false">
+        <div class="photo-fallback" hidden aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 17.5 9 12l3 3 3-4 5 6.5"/><circle cx="8" cy="8" r="1.5"/><rect x="2.5" y="3" width="19" height="18" rx="2.5"/></svg></div>
+      </div>
+      <div class="product-body">
+        <span class="product-category">${escapeHTML(CATEGORY_LABELS[p.category] || p.category)}</span>
+        <h3 class="product-title">${escapeHTML(p.name)}</h3>
+        <p class="product-desc">${escapeHTML(p.description)}</p>
+        <div class="product-price" data-price>${formatMoney(initialPrice)} <span style="font-size:.72rem;font-weight:600;color:var(--muted)">${defaultUnit === "kg" ? "/ kg" : "/ pièce"}</span></div>
+        <div class="product-controls">
+          ${multi ? `<label class="sr-only" for="unit-${escapeHTML(p.id)}">Unité pour ${escapeHTML(p.name)}</label><select class="unit-select" id="unit-${escapeHTML(p.id)}" data-unit>${units.join("")}</select>` : `<input type="hidden" data-unit value="${defaultUnit}">`}
+          <div class="quantity-row">
+            <button class="qty-btn" type="button" data-minus aria-label="Diminuer la quantité de ${escapeHTML(p.name)}">−</button>
+            <label class="sr-only" for="qty-${escapeHTML(p.id)}">Quantité</label>
+            <input class="qty-input" id="qty-${escapeHTML(p.id)}" type="number" min="1" step="1" value="1" inputmode="numeric" data-qty>
+            <button class="qty-btn" type="button" data-plus aria-label="Augmenter la quantité de ${escapeHTML(p.name)}">+</button>
+          </div>
+          <button class="add-btn" type="button" data-add>Ajouter au panier</button>
+        </div>
+      </div>
+    </article>`;
+  }).join("") : `<div class="empty-state">Aucun produit ne correspond à votre recherche.</div>`;
+}
+
+$("productGrid").addEventListener("click", (event) => {
+  const card = event.target.closest(".product-card");
+  if (!card) return;
+  const product = getProduct(card.dataset.product);
+  const qtyInput = card.querySelector("[data-qty]");
+  if (event.target.closest("[data-minus]")) qtyInput.value = normalizeQuantity(qtyInput.value,"kg") > 1 ? normalizeQuantity(qtyInput.value,"kg") - 1 : 1;
+  if (event.target.closest("[data-plus]")) qtyInput.value = normalizeQuantity(qtyInput.value,"kg") + 1;
+  if (event.target.closest("[data-add]")) {
+    const unit = card.querySelector("[data-unit]").value;
+    const qty = normalizeQuantity(qtyInput.value, unit);
+    qtyInput.value = qty;
+    addToCart(product.id, unit, qty);
+    const btn = card.querySelector("[data-add]");
+    btn.textContent = "Ajouté au panier";
+    btn.classList.add("added");
+    window.setTimeout(() => { btn.textContent = "Ajouter au panier"; btn.classList.remove("added"); }, 1100);
+  }
+});
+$("productGrid").addEventListener("change", (event) => {
+  if (!event.target.matches("[data-unit]")) return;
+  const card = event.target.closest(".product-card");
+  const p = getProduct(card.dataset.product);
+  const unit = event.target.value;
+  card.querySelector("[data-price]").innerHTML = `${formatMoney(unitPrice(p,unit))} <span style="font-size:.72rem;font-weight:600;color:var(--muted)">${unit === "kg" ? "/ kg" : "/ pièce"}</span>`;
+});
+$("productGrid").addEventListener("input", event => {
+  if (event.target.matches("[data-qty]")) event.target.value = event.target.value.replace(/[^\d]/g,"");
+});
+function addToCart(id, unit, qty) {
+  const existing = cart.find(row => row.id === id && row.unit === unit);
+  if (existing) existing.qty += qty; else cart.push({id,unit,qty});
+  saveCart(); renderCart();
+}
+function updateCartQty(index, qty) {
+  if (!cart[index]) return;
+  cart[index].qty = normalizeQuantity(qty,cart[index].unit);
+  saveCart(); renderCart();
+}
+function removeCartItem(index) { cart.splice(index,1); saveCart(); renderCart(); }
+
+function renderCart() {
+  const count = cart.reduce((n,row) => n + row.qty,0);
+  $("cartCount").textContent = `${count} ${count > 1 ? "articles" : "article"}`;
+  $("cartBarTotal").textContent = formatMoney(cartSubtotal());
+  $("subtotal").textContent = formatMoney(cartSubtotal());
+  $("deliverySummaryRow").hidden = selectedMode() !== "delivery";
+  $("deliverySummary").textContent = formatMoney(deliveryCost());
+  $("grandTotal").textContent = formatMoney(cartGrandTotal());
+  $("cartItems").innerHTML = cart.length ? cart.map((row,index) => {
+    const p = getProduct(row.id);
+    const label = row.unit === "kg" ? "kg" : "pièce(s)";
+    return `<div class="cart-line">
+      <img src="${escapeHTML(p.photo)}" alt="" onerror="this.style.display='none';this.nextElementSibling.hidden=false">
+      <div class="cart-thumb" hidden aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m4 16 5-5 3 3 3-4 5 6"/></svg></div>
+      <div><h3>${escapeHTML(p.name)}</h3><div class="line-meta">${formatMoney(unitPrice(p,row.unit))} / ${row.unit === "kg" ? "kg" : "pièce"}</div>
+        <div class="line-controls"><button type="button" data-cart-minus="${index}" aria-label="Diminuer">−</button><input type="number" min="1" step="1" value="${row.qty}" data-cart-qty="${index}" aria-label="Quantité de ${escapeHTML(p.name)}"><button type="button" data-cart-plus="${index}" aria-label="Augmenter">+</button></div>
+      </div>
+      <div class="line-end"><strong class="line-price">${formatMoney(unitPrice(p,row.unit)*row.qty)}</strong><button type="button" class="remove-btn" data-remove="${index}">Supprimer</button></div>
+    </div>`;
+  }).join("") : `<div class="empty-state">Votre panier est vide. Ajoutez quelques douceurs pour commencer.</div>`;
+  $("whatsappBtn").hidden = !CONFIG.whatsappNumber || !/^213\d{9}$/.test(CONFIG.whatsappNumber);
+  $("emailBtn").hidden = !CONFIG.web3formsKey;
+}
+$("cartItems").addEventListener("click", event => {
+  const minus = event.target.closest("[data-cart-minus]");
+  const plus = event.target.closest("[data-cart-plus]");
+  const remove = event.target.closest("[data-remove]");
+  if (minus) updateCartQty(Number(minus.dataset.cartMinus), cart[Number(minus.dataset.cartMinus)].qty - 1);
+  if (plus) updateCartQty(Number(plus.dataset.cartPlus), cart[Number(plus.dataset.cartPlus)].qty + 1);
+  if (remove) removeCartItem(Number(remove.dataset.remove));
+});
+$("cartItems").addEventListener("change", event => {
+  if (event.target.matches("[data-cart-qty]")) updateCartQty(Number(event.target.dataset.cartQty), event.target.value);
+});
+
+function openDrawer() {
+  $("overlay").classList.add("open"); $("cartDrawer").classList.add("open");
+  $("cartDrawer").setAttribute("aria-hidden","false"); document.body.style.overflow = "hidden";
+  $("closeDrawer").focus();
+}
+function closeDrawer() {
+  $("overlay").classList.remove("open"); $("cartDrawer").classList.remove("open");
+  $("cartDrawer").setAttribute("aria-hidden","true"); document.body.style.overflow = "";
+  $("cartBar").focus();
+}
+$("cartBar").addEventListener("click",openDrawer);
+$("closeDrawer").addEventListener("click",closeDrawer);
+$("overlay").addEventListener("click",closeDrawer);
+document.addEventListener("keydown", e => { if (e.key === "Escape" && $("cartDrawer").classList.contains("open")) closeDrawer(); });
+
+function updateDeliveryUI() {
+  const delivery = selectedMode() === "delivery";
+  $("pickupBlock").hidden = delivery;
+  $("deliveryBlock").hidden = !delivery;
+  $("pickupBlock").textContent = "Adresse de récupération : " + CONFIG.atelierAddress;
+  $("deliveryFeeNote").textContent = "Frais de livraison : " + formatMoney(deliveryCost()) + " (ajoutés au total estimé).";
+  renderCart();
+}
+document.querySelectorAll('input[name="deliveryMode"]').forEach(input => input.addEventListener("change",updateDeliveryUI));
+
+function setError(field, message) {
+  const input = $(field);
+  const error = $(field + "Error");
+  if (input) input.classList.toggle("invalid",Boolean(message));
+  if (error) error.textContent = message || "";
+}
+function validateOrder() {
+  let valid = true;
+  const last = $("lastName").value.trim();
+  const first = $("firstName").value.trim();
+  const phoneRaw = $("phone").value.trim();
+  const phone = phoneRaw.replace(/[\s().-]/g,"");
+  const phoneValid = /^(0[567]\d{8}|\+213[567]\d{8}|213[567]\d{8})$/.test(phone);
+  setError("lastName", last ? "" : "Veuillez renseigner votre nom."); if (!last) valid = false;
+  setError("firstName", first ? "" : "Veuillez renseigner votre prénom."); if (!first) valid = false;
+  setError("phone", phoneValid ? "" : "Saisissez un numéro algérien valide (05, 06 ou 07, 10 chiffres)."); if (!phoneValid) valid = false;
+  const address = $("address").value.trim();
+  if (selectedMode() === "delivery") {
+    setError("address", address.length >= 8 ? "" : "Veuillez saisir une adresse complète (au moins 8 caractères).");
+    if (address.length < 8) valid = false;
+  } else setError("address","");
+  if (!cart.length) { showStatus("Votre panier est vide. Ajoutez au moins un produit avant l'envoi.",false); valid = false; }
+  return valid;
+}
+function orderDetails() {
+  const mode = selectedMode();
+  const rows = cart.map(row => {
+    const p = getProduct(row.id);
+    return `- ${p.name} : ${row.qty} ${row.unit === "kg" ? "kg" : "pièce(s)"} × ${formatMoney(unitPrice(p,row.unit))} = ${formatMoney(unitPrice(p,row.unit)*row.qty)}`;
+  });
+  return {
+    first:$("firstName").value.trim(), last:$("lastName").value.trim(),
+    phone:$("phone").value.trim(), mode,
+    address: mode === "delivery" ? $("address").value.trim() : CONFIG.atelierAddress,
+    date:$("wantedDate").value, time:$("wantedTime").value, remark:$("remark").value.trim(),
+    rows, subtotal:cartSubtotal(), delivery:deliveryCost(), total:cartGrandTotal()
+  };
+}
+function buildMessage(o) {
+  return [
+    `Bonjour ${CONFIG.atelierName}, je souhaite passer une commande :`,
+    `Client : ${o.first} ${o.last}`,
+    `Téléphone : ${o.phone}`,
+    `Mode : ${o.mode === "delivery" ? "Livraison" : "Récupération sur place"}`,
+    `Adresse : ${o.address}`,
+    "",
+    "Détail de la commande :", ...o.rows,
+    "",
+    `Sous-total : ${formatMoney(o.subtotal)}`,
+    ...(o.mode === "delivery" ? [`Frais de livraison : ${formatMoney(o.delivery)}`] : []),
+    `TOTAL ESTIMÉ : ${formatMoney(o.total)}`,
+    o.date ? `Date souhaitée : ${o.date}` : "",
+    o.time ? `Heure souhaitée : ${o.time}` : "",
+    o.remark ? `Remarque : ${o.remark}` : "",
+    "",
+    "Merci de me confirmer la disponibilité et le prix final."
+  ].filter(Boolean).join("\n");
+}
+function showStatus(message, success) {
+  const box = $("formStatus");
+  box.textContent = message;
+  box.className = "form-status show " + (success ? "success-status" : "error-status");
+}
+$("whatsappBtn").addEventListener("click", () => {
+  if (!validateOrder()) return;
+  const message = buildMessage(orderDetails());
+  const url = "https://wa.me/" + CONFIG.whatsappNumber + "?text=" + encodeURIComponent(message);
+  window.open(url,"_blank","noopener,noreferrer");
+  showStatus("Votre message WhatsApp est prêt. Vérifiez le récapitulatif dans WhatsApp puis appuyez sur Envoyer.",true);
+});
+$("emailBtn").addEventListener("click", async () => {
+  if (!validateOrder()) return;
+  const button = $("emailBtn");
+  const original = button.textContent;
+  button.disabled = true; button.textContent = "Envoi en cours…";
+  try {
+    const o = orderDetails();
+    const payload = {
+      access_key: CONFIG.web3formsKey,
+      subject: `Nouvelle commande — ${CONFIG.atelierName}`,
+      from_name: `${o.first} ${o.last}`,
+      phone: o.phone,
+      mode_reception: o.mode === "delivery" ? "Livraison" : "Récupération sur place",
+      adresse: o.address,
+      commande: o.rows.join("\n"),
+      sous_total: formatMoney(o.subtotal),
+      livraison: formatMoney(o.delivery),
+      total: formatMoney(o.total),
+      date_souhaitee: o.date,
+      heure_souhaitee: o.time,
+      remarque: o.remark
+    };
+    const response = await fetch("https://api.web3forms.com/submit", {
+      method:"POST", headers:{"Content-Type":"application/json","Accept":"application/json"},
+      body:JSON.stringify(payload)
+    });
+    const result = await response.json();
+    if (!response.ok || !result.success) throw new Error(result.message || "L'envoi n'a pas abouti.");
+    showStatus("Commande envoyée par email avec succès. L'atelier vous recontactera pour confirmer.",true);
+  } catch (error) {
+    showStatus("Impossible d'envoyer l'email pour le moment. Réessayez ou utilisez WhatsApp. " + error.message,false);
+  } finally { button.disabled = false; button.textContent = original; }
+});
+
+$("filters").addEventListener("click", event => {
+  const button = event.target.closest("[data-category]");
+  if (!button) return;
+  activeCategory = button.dataset.category;
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.toggle("active",b === button));
+  renderProducts();
+});
+$("searchInput").addEventListener("input",renderProducts);
+
+function initialize() {
+  $("brandName").textContent = CONFIG.atelierName;
+  $("footerName").textContent = CONFIG.atelierName;
+  if (CONFIG.logo) {
+    $("brandLogo").innerHTML = `<img src="${escapeHTML(CONFIG.logo)}" alt="">`;
+  }
+  renderProducts();
+  updateDeliveryUI();
+  renderCart();
+}
+initialize();
+</script>
+</body>
+</html>
